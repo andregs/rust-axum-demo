@@ -1,0 +1,34 @@
+# kubectl create deployment postgres --image=postgres --dry-run=client -o yaml > ops/k8s/storage/postgres-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - image: postgres
+        name: postgres
+        resources: {}
+        env:
+          - name: POSTGRES_PASSWORD # TODO secret management
+            value: mysecretpassword
+          - name: POSTGRES_DB
+            value: axum_demo
+status: {}
+
+# TODO should it be a stateful set?
+# TODO persistent volume & claim

@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: storage
+deploy:
+  kubectl:
+    manifests:
+    - ./ops/k8s/storage/*.yaml
+portForward:
+- resourceType: service
+  resourceName: postgres
+  port: 5432
