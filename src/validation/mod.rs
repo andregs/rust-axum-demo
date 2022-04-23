@@ -49,6 +49,7 @@ pub struct ErrorBody {
 
 impl IntoResponse for InvalidRequest {
     fn into_response(self) -> Response {
+        // TODO should it be the request ID?
         let id = Uuid::new_v4().to_string();
         tracing::debug!("{} {:?}", id, self);
 
