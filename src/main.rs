@@ -3,6 +3,7 @@
 mod config;
 mod controller;
 mod model;
+mod validation;
 
 #[tokio::main]
 async fn main() {

@@ -1,6 +1,6 @@
-use axum::{http::StatusCode, response::IntoResponse, routing::post, Json, Router};
+use axum::{http::StatusCode, routing::post, Json, Router};
 
-use crate::model::*;
+use crate::{model::*, validation::*};
 
 pub fn router() -> Router {
     Router::new()
@@ -9,12 +9,12 @@ pub fn router() -> Router {
         .route("/authenticate", post(authenticate))
 }
 
-async fn register(Json(credentials): Json<Credentials>) -> impl IntoResponse {
+async fn register(Valid(credentials): Valid<Credentials>) -> (StatusCode, Json<Credentials>) {
     tracing::info!("Registering {:?}", credentials);
     (StatusCode::CREATED, Json(credentials))
 }
 
-async fn login(Json(credentials): Json<Credentials>) -> Json<LoginOk> {
+async fn login(Valid(credentials): Valid<Credentials>) -> Json<LoginOk> {
     tracing::info!("Login: {:?}", credentials);
     Json(LoginOk { token: "token!".into() })
 }
