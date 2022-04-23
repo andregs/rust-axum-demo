@@ -1,13 +1,10 @@
 #![forbid(unsafe_code)]
 
-mod config;
-mod controller;
-mod model;
-mod validation;
+use axum_demo::config;
 
 #[tokio::main]
 async fn main() {
-    let (address, service) = config::build_app().await;
+    let (address, service) = config::build_service().await;
     tracing::info!("listening on {}", address);
     axum::Server::bind(&address).serve(service).await.unwrap();
 }

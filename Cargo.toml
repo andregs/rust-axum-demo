@@ -18,3 +18,6 @@ tracing = "0.1"
 tracing-subscriber = {version = "0.3", features = ["env-filter"]}
 uuid = {version = "1.0", features = ["v4", "fast-rng", "macro-diagnostics"]}
 validator = {version = "0.14", features = ["derive"]}
+
+[dev_dependencies]
+hyper = {version = "0.14", features = ["full"]}

@@ -4,11 +4,15 @@ use std::net::SocketAddr;
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
-pub async fn build_app() -> (SocketAddr, IntoMakeService<Router>) {
-    config_tracer();
+pub async fn build_service() -> (SocketAddr, IntoMakeService<Router>) {
     let address = SocketAddr::from(([127, 0, 0, 1], 3000));
     let service = config_router().into_make_service();
     (address, service)
+}
+
+pub fn config_router() -> Router {
+    config_tracer();
+    Router::new().merge(controller::router()).layer(TraceLayer::new_for_http())
 }
 
 fn config_tracer() {
@@ -19,8 +23,4 @@ fn config_tracer() {
         .with(fmt::layer())
         .with(EnvFilter::from_default_env())
         .init();
-}
-
-fn config_router() -> Router {
-    Router::new().merge(controller::router()).layer(TraceLayer::new_for_http())
 }
