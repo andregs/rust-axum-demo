@@ -1,40 +1,41 @@
+use super::Config;
 use crate::controller;
-use axum::{routing::IntoMakeService, Extension, Router, Server};
+use axum::{http::Request, routing::IntoMakeService, Extension, Router, Server};
 use hyper::server::conn::AddrIncoming;
 use std::net::SocketAddr;
 use tower_http::trace::TraceLayer;
-use tracing_subscriber::{fmt, prelude::*, EnvFilter};
+use tracing_subscriber::{fmt, prelude::*};
+use uuid::Uuid;
 
-use super::Config;
-
-// TODO handle error
-pub async fn build_server() -> hyper::Result<Server<AddrIncoming, IntoMakeService<Router>>> {
-    let (config, router) = config_router();
+pub fn build_server() -> Server<AddrIncoming, IntoMakeService<Router>> {
+    let (config, router) = configure();
     let address: SocketAddr = SocketAddr::new(config.address, config.port);
     let service = router.into_make_service();
-    let server = Server::try_bind(&address)?.serve(service);
-    hyper::Result::Ok(server)
+    Server::try_bind(&address)
+        .unwrap_or_else(|e| panic!("Error binding to '{}' - {}", address, e))
+        .serve(service)
 }
 
-pub fn config_router() -> (Config, Router) {
-    config_tracer();
-    let config = Config::load().expect("bad config!"); // TODO log properly
-    tracing::debug!("{:?}", config);
-    let router = Router::new()
-        .merge(controller::router())
-        .layer(TraceLayer::new_for_http())
-        .layer(Extension(config.clone())); // TODO maybe Arc<Config>
+pub fn configure() -> (Config, Router) {
+    let config = Config::load().expect("Unable to parse configuration");
 
-    (config, router)
-}
-
-fn config_tracer() {
-    // TODO study distributed tracing and open telemetry
     // https://www.lpalmieri.com/posts/2020-09-27-zero-to-production-4-are-we-observable-yet/
-    // https://docs.rs/tower-http/0.2.5/tower_http/trace/index.html
     tracing_subscriber::registry()
         .with(fmt::layer())
-        // TODO EnvFilter::new() so we load from Config struct
-        .with(EnvFilter::from_default_env())
+        .with(config.new_env_filter())
         .init();
+
+    tracing::info!("{:?}", config);
+
+    let trace_layer = TraceLayer::new_for_http().make_span_with(|_: &Request<_>| {
+        let request_id = Uuid::new_v4();
+        tracing::info_span!("request", %request_id)
+    });
+
+    let router = Router::new()
+        .merge(controller::router())
+        .layer(trace_layer)
+        .layer(Extension(config.clone()));
+
+    (config, router)
 }

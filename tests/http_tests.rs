@@ -11,7 +11,7 @@ use tower::ServiceExt;
 
 #[tokio::test]
 async fn it_should_pass_e2e_happy_path() {
-    let (_, router) = config::app::config_router();
+    let (_, router) = config::app::configure();
 
     let req_json = json!({ "username": "foo", "password": "12345678" });
     let bytes = serde_json::to_vec(&req_json).unwrap();

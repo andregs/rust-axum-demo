@@ -1,6 +1,11 @@
 use lazy_regex::{lazy_regex, Lazy, Regex};
 use serde::{Deserialize, Serialize};
+use std::fmt::Debug;
 use validator::Validate;
+
+// GDPR tip: do not derive Display or Debug on structs containing Personal Identifiable Info,
+// to make it harder leaking them on logs.
+// there's https://crates.io/crates/secrecy but I couldn't make it work with validator
 
 #[derive(Serialize, Deserialize, Validate, PartialEq, Eq, Debug, Clone)]
 pub struct Credentials {

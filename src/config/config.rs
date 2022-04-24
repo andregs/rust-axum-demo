@@ -5,7 +5,7 @@ use figment::{
 };
 use serde::{Deserialize, Serialize};
 use std::net::{IpAddr, Ipv4Addr};
-use tracing::Level;
+use tracing_subscriber::EnvFilter;
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Config {
@@ -23,7 +23,7 @@ impl Default for Config {
             profile: Profile::Default,
             address: Ipv4Addr::LOCALHOST.into(),
             port: 3000,
-            log_level: Level::DEBUG.to_string(),
+            log_level: "axum_demo=debug,tower_http=debug".into(),
             database_url: "postgres://postgres:mysecretpassword@localhost/axum_demo".into(),
             redis_url: "redis://localhost:6379".into(),
         }
@@ -38,6 +38,10 @@ impl Config {
             .merge(Env::prefixed("APP_").global())
             .select(profile)
             .extract::<Config>()
+    }
+
+    pub fn new_env_filter(&self) -> EnvFilter {
+        EnvFilter::try_new(&self.log_level).expect("Unable to set the log level")
     }
 }
 

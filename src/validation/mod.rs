@@ -41,18 +41,15 @@ pub enum InvalidRequest {
     AxumJsonRejection(#[from] JsonRejection),
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Debug)]
 pub struct ErrorBody {
     id: String,
     message: String,
 }
 
 impl IntoResponse for InvalidRequest {
+    #[tracing::instrument]
     fn into_response(self) -> Response {
-        // TODO should it be the request ID?
-        let id = Uuid::new_v4().to_string();
-        tracing::debug!("{} {:?}", id, self);
-
         let (status, message) = match self {
             InvalidRequest::ValidationError(errors) => (
                 StatusCode::BAD_REQUEST,
@@ -65,7 +62,11 @@ impl IntoResponse for InvalidRequest {
                 _ => (StatusCode::BAD_REQUEST, "Unknown Reason".to_string()),
             },
         };
+
+        let id = Uuid::new_v4().to_string();
         let error = ErrorBody { id, message };
+        tracing::debug!("{:?}", error);
+
         (status, Json(error)).into_response()
     }
 }

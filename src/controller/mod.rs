@@ -1,6 +1,5 @@
-use axum::{http::StatusCode, routing::post, Json, Router};
-
 use crate::{model::*, validation::*};
+use axum::{http::StatusCode, routing::post, Json, Router};
 
 pub fn router() -> Router {
     Router::new()
@@ -9,18 +8,21 @@ pub fn router() -> Router {
         .route("/authenticate", post(authenticate))
 }
 
+#[tracing::instrument]
 async fn register(Valid(credentials): Valid<Credentials>) -> (StatusCode, Json<Credentials>) {
-    tracing::info!("Registering {:?}", credentials);
+    tracing::debug!("Registering a new user");
     (StatusCode::CREATED, Json(credentials))
 }
 
+#[tracing::instrument]
 async fn login(Valid(credentials): Valid<Credentials>) -> Json<LoginOk> {
-    tracing::info!("Login: {:?}", credentials);
+    tracing::info!("Login successful");
     Json(LoginOk { token: "token!".into() })
 }
 
-async fn authenticate(token: Token) -> Json<AuthOk> {
-    tracing::info!("Authenticating: {:?}", token);
+#[tracing::instrument]
+async fn authenticate(_token: Token) -> Json<AuthOk> {
+    tracing::info!("Authenticating user");
     Json(AuthOk {
         username: "user!".into(),
     })
