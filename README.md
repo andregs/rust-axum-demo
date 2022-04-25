@@ -2,6 +2,15 @@
 
 This is a work in progress. It will be just like https://github.com/andregs/rust-auth-demo but using Axum instead of Rocket.
 
+## tl;dr
+
+Execute this demo app in [minikube](https://minikube.sigs.k8s.io/docs/start/) with:
+
+```sh
+minikube start --mount --mount-string=$PWD:/mnt/host --cpus=4
+skaffold dev --trigger=manual
+```
+
 ### Notes
 
 Repository created with `cargo init`.

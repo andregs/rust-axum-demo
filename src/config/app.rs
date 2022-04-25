@@ -2,7 +2,7 @@ use super::Config;
 use crate::controller;
 use axum::{http::Request, routing::IntoMakeService, Extension, Router, Server};
 use hyper::server::conn::AddrIncoming;
-use std::net::SocketAddr;
+use std::{env, net::SocketAddr};
 use tower_http::trace::TraceLayer;
 use tracing_subscriber::{fmt, prelude::*};
 use uuid::Uuid;
@@ -19,17 +19,21 @@ pub fn build_server() -> Server<AddrIncoming, IntoMakeService<Router>> {
 pub fn configure() -> (Config, Router) {
     let config = Config::load().expect("Unable to parse configuration");
 
+    // I could embed this into config struct
+    let pod = env::var("MY_POD_NAME").unwrap_or_else(|_| "unknown".into());
+
     // https://www.lpalmieri.com/posts/2020-09-27-zero-to-production-4-are-we-observable-yet/
     tracing_subscriber::registry()
         .with(fmt::layer())
         .with(config.new_env_filter())
         .init();
 
-    tracing::info!("{:?}", config);
+    // this log will contain a field with k8s pod's name in addition to the message
+    tracing::info!(%pod, "Configured with {:?}", config);
 
-    let trace_layer = TraceLayer::new_for_http().make_span_with(|_: &Request<_>| {
+    let trace_layer = TraceLayer::new_for_http().make_span_with(move |_: &Request<_>| {
         let request_id = Uuid::new_v4();
-        tracing::info_span!("request", %request_id)
+        tracing::info_span!("request", %pod, %request_id)
     });
 
     let router = Router::new()

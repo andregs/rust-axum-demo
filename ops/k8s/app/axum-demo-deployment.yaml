@@ -1,0 +1,33 @@
+# kubectl create deployment axum-demo --image=andregs/axum-demo --dry-run=client -o yaml > ops/k8s/app/axum-demo-deployment.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: axum-demo
+  name: axum-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: axum-demo
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: axum-demo
+    spec:
+      containers:
+      - image: andregs/axum-demo
+        name: axum-demo
+        resources: {}
+        env:
+        - name: RUST_BACKTRACE
+          value: "1"
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+status: {}

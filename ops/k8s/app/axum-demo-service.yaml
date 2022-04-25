@@ -1,0 +1,20 @@
+# kubectl create service clusterip axum-demo --tcp=3000:3000 -o yaml --dry-run=client > ops/k8s/app/axum-demo-service.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: axum-demo
+  name: axum-demo
+spec:
+  ports:
+  - name: 3000-3000
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: axum-demo
+  type: ClusterIP
+status:
+  loadBalancer: {}
