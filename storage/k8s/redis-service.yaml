@@ -1,4 +1,4 @@
-# kubectl create service clusterip redis --tcp=6379:6379 -o yaml --dry-run=client > ops/k8s/storage/redis-service.yaml
+# kubectl create service clusterip redis --tcp=6379:6379 -o yaml --dry-run=client > storage/k8s/redis-service.yaml
 
 apiVersion: v1
 kind: Service

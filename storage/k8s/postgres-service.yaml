@@ -1,4 +1,4 @@
-# kubectl create service clusterip postgres --tcp=5432:5432 -o yaml --dry-run=client > ops/k8s/storage/postgres-service.yaml
+# kubectl create service clusterip postgres --tcp=5432:5432 -o yaml --dry-run=client > storage/k8s/postgres-service.yaml
 
 apiVersion: v1
 kind: Service

@@ -1,4 +1,5 @@
 .vscode/
-ops/
+storage/
 target/
-tests/
+**/k8s/
+**/tests/

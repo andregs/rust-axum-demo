@@ -1,35 +1,10 @@
-apiVersion: skaffold/v2beta28
-kind: Config
-metadata:
-  name: storage
-deploy:
-  kubectl:
-    manifests:
-    - ./ops/k8s/storage/*.yaml
-portForward:
-- resourceType: service
-  resourceName: postgres
-  port: 5432
-
----
+# Based on example available at:
+# https://github.com/GoogleContainerTools/skaffold/tree/main/examples/multi-config-microservices
 
 apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
-  name: app
-build:
-  artifacts:
-  - image: andregs/axum-demo
-    docker:
-      dockerfile: ops/docker/app.dockerfile
-  local: 
-    useDockerCLI: false
-    useBuildkit: false
-deploy:
-  kubectl:
-    manifests:
-    - ./ops/k8s/app/*.yaml
-portForward:
-- resourceType: service
-  resourceName: axum-demo
-  port: 3000
+  name: microverse
+requires:
+- path: ./storage
+- path: ./web

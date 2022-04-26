@@ -1,4 +1,4 @@
-# kubectl create deployment redis --image=redis --dry-run=client -o yaml > ops/k8s/storage/redis-deployment.yaml
+# kubectl create deployment redis --image=redis --dry-run=client -o yaml > storage/k8s/redis-deployment.yaml
 
 apiVersion: apps/v1
 kind: Deployment

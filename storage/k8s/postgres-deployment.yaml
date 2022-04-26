@@ -1,4 +1,4 @@
-# kubectl create deployment postgres --image=postgres --dry-run=client -o yaml > ops/k8s/storage/postgres-deployment.yaml
+# kubectl create deployment postgres --image=postgres --dry-run=client -o yaml > storage/k8s/postgres-deployment.yaml
 
 apiVersion: apps/v1
 kind: Deployment
