@@ -1,1 +1,4 @@
+.vscode/
+ops/
 target/
+tests/

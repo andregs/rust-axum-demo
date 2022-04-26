@@ -9,6 +9,7 @@ use axum::{
     BoxError, Json,
 };
 use serde::{de::DeserializeOwned, Serialize};
+use tracing::debug;
 use uuid::Uuid;
 use validator::Validate;
 
@@ -65,7 +66,7 @@ impl IntoResponse for InvalidRequest {
 
         let id = Uuid::new_v4().to_string();
         let error = ErrorBody { id, message };
-        tracing::debug!("{:?}", error);
+        debug!("{:?}", error);
 
         (status, Json(error)).into_response()
     }
