@@ -1,12 +1,12 @@
 apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
-  name: web
+  name: migration
 build:
   artifacts:
-  - image: andregs/axum-demo
+  - image: andregs/migration
     docker:
-      dockerfile: ./web/Dockerfile
+      dockerfile: ./migration/Dockerfile
       cacheFrom:
       - "rust:1.60.0"
       - "lukemathwalker/cargo-chef:latest-rust-1.60.0"
@@ -16,7 +16,4 @@ deploy:
   kubectl:
     manifests:
     - ./k8s/*.yaml
-portForward:
-- resourceType: service
-  resourceName: axum-demo
-  port: 3000
+    
