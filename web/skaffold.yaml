@@ -5,13 +5,14 @@ metadata:
 build:
   artifacts:
   - image: andregs/axum-demo
+    context: ..
     docker:
       dockerfile: ./web/Dockerfile
       cacheFrom:
       - "rust:1.60.0"
       - "lukemathwalker/cargo-chef:latest-rust-1.60.0"
       - "andregs/axum-demo"
-      - "andregs/migration"
+      - "andregs/migrate-db"
 deploy:
   kubectl:
     manifests:

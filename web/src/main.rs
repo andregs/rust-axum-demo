@@ -1,6 +1,6 @@
 #![forbid(unsafe_code)]
 
-use axum_demo::config;
+use utils::config;
 
 #[tokio::main]
 async fn main() {

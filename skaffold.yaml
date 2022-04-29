@@ -7,5 +7,5 @@ metadata:
   name: microverse
 requires:
 - path: ./storage
-- path: ./migration
+- path: ./migrate-db
 - path: ./web

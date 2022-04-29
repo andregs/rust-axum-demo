@@ -1,10 +1,10 @@
-# kubectl create job migration --image=rust:1.60 --dry-run=client -o yaml > migration/k8s/migration-job.yaml
+# kubectl create job migrate-db --image=rust:1.60 --dry-run=client -o yaml > migrate-db/k8s/migrate-db-job.yaml
 
 apiVersion: batch/v1
 kind: Job
 metadata:
   creationTimestamp: null
-  name: migration
+  name: migrate-db
 spec:
   backoffLimit: 4 # try job 5 times
   template:
@@ -12,12 +12,14 @@ spec:
       creationTimestamp: null
     spec:
       containers:
-      - image: andregs/migration
-        name: migration
+      - image: andregs/migrate-db
+        name: migrate-db
         resources: {}
         env:
         - name: RUST_BACKTRACE
           value: "1"
+        - name: APP_PROFILE
+          value: cloud
 
       # pod's container will not be restarted upon failure, but
       # will result in a new pod for the job until backoffLimit

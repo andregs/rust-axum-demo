@@ -13,7 +13,14 @@ minikube start --cpus=4
 Build and deploy everything, in dev mode:
 
 ```sh
-skaffold dev --iterative-status-check --trigger manual
+skaffold dev --iterative-status-check --trigger manual --force
+```
+<!-- TODO should never be iterative, should deploy everything asap and k8s operator would transition states -->
+
+Execute the tests:
+
+```sh
+cargo test
 ```
 
 ### Notes
@@ -23,4 +30,3 @@ Repository created with `cargo init`.
 https://github.com/tokio-rs/axum
 
 https://docs.rs/axum/latest/axum/
-

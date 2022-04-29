@@ -26,8 +26,6 @@ spec:
         env:
         - name: RUST_BACKTRACE
           value: "1"
-        - name: MY_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
+        - name: APP_PROFILE
+          value: cloud
 status: {}

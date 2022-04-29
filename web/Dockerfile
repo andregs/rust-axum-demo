@@ -13,10 +13,14 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 # Build application
 COPY . .
-RUN cargo build --release --bin axum_demo
+RUN cargo build --release -p axum_demo
 
 # We do not need the Rust toolchain to run the binary!
 FROM debian:bullseye-slim AS runtime
 WORKDIR app
-COPY --from=builder /app/target/release/axum_demo /usr/local/bin
-ENTRYPOINT ["/usr/local/bin/axum_demo"]
+COPY --from=builder /app/application.toml .
+COPY --from=builder /app/target/release/axum_demo .
+ENTRYPOINT ["./axum_demo"]
+
+# TODO only one builder image that compiles the whole workspace
+# two runtime images that simply copy the binaries to themselves

@@ -1,6 +1,9 @@
 [workspace]
 
 members = [
+  "utils",
   "web",
-  "migration",
+  "migrate-db",
 ]
+
+default-members = ["web"]

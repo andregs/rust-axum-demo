@@ -2,16 +2,17 @@ use axum::{
     body::Body,
     http::{header, Method, Request, StatusCode},
 };
-use axum_demo::config;
 use hyper::body;
 use serde_json::{json, Value};
 use tower::ServiceExt;
+use utils::config;
 
 // see more examples at https://github.com/tokio-rs/axum/blob/main/examples/testing/src/main.rs
 
 #[tokio::test]
 async fn it_should_pass_e2e_happy_path() {
-    let (_, router) = config::app::configure();
+    let config = config::app::configure();
+    let router = config::app::build_router(config);
 
     let req_json = json!({ "username": "foo", "password": "12345678" });
     let bytes = serde_json::to_vec(&req_json).unwrap();
