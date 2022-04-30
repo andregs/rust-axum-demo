@@ -1,8 +1,6 @@
-use sqlx::postgres::{PgConnectOptions, PgConnection};
-use sqlx::{ConnectOptions, Connection};
 use std::time::Duration;
 use tracing::info;
-use utils::config::{app, Config};
+use utils::config::{app, db, Config};
 
 #[tokio::main]
 async fn main() -> Result<(), sqlx::Error> {
@@ -14,10 +12,7 @@ async fn main() -> Result<(), sqlx::Error> {
     fields(%cfg.hostname),
 )]
 async fn migrate(cfg: Config) -> Result<(), sqlx::Error> {
-    let mut db_config: PgConnectOptions = cfg.database_url.parse()?;
-    db_config.disable_statement_logging();
-
-    let db = &mut PgConnection::connect_with(&db_config).await?;
+    let db = &mut db::connect(&cfg).await;
     info!("Migrating DB...");
 
     // faking some long-running migrations here

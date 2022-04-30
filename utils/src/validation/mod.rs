@@ -9,7 +9,7 @@ use axum::{
     BoxError, Json,
 };
 use serde::{de::DeserializeOwned, Serialize};
-use tracing::debug;
+use tracing::{debug, Level};
 use uuid::Uuid;
 use validator::Validate;
 
@@ -49,7 +49,7 @@ pub struct ErrorBody {
 }
 
 impl IntoResponse for InvalidRequest {
-    #[tracing::instrument]
+    #[tracing::instrument(level = Level::TRACE)]
     fn into_response(self) -> Response {
         let (status, message) = match self {
             InvalidRequest::ValidationError(errors) => (

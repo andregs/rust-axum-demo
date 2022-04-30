@@ -45,6 +45,10 @@ fn hostname() -> String {
 impl Config {
     pub fn load() -> Result<Self, figment::Error> {
         let profile = Profile::from_env_or("APP_PROFILE", Profile::Default);
+        Self::load_for(profile)
+    }
+
+    pub fn load_for(profile: Profile) -> Result<Self, figment::Error> {
         Figment::from(Config::default())
             .merge(Toml::file("application.toml").nested())
             .merge(Env::prefixed("APP_").global())

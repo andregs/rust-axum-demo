@@ -4,3 +4,4 @@ pub mod config;
 mod controller;
 pub mod model;
 mod validation;
+mod credential_repo;

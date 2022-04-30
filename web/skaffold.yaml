@@ -23,3 +23,9 @@ portForward:
 - resourceType: service
   resourceName: axum-demo
   port: 3000
+
+# TODO refactor
+# rename web to axum-demo-bin
+# rename utils to axum-demo
+
+# should i keep them separated or merge them back?

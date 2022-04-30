@@ -1,5 +1,8 @@
 [test]
 log_level = "warn"
 
+[local]
+database_url = "postgres://postgres:mysecretpassword@localhost/axum_demo"
+
 [cloud]
 database_url = "postgres://postgres:mysecretpassword@postgres/axum_demo"

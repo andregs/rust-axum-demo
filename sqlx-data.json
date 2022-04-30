@@ -1,0 +1,45 @@
+{
+  "db": "PostgreSQL",
+  "b3700d0a6d020b433f7c3f04c72013f04b7fabd6d87e3ae65308f5224e68d148": {
+    "describe": {
+      "columns": [
+        {
+          "name": "not_null!",
+          "ordinal": 0,
+          "type_info": "Bool"
+        }
+      ],
+      "nullable": [
+        null
+      ],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT password = crypt($1, password) as \"not_null!\"\n            FROM credentials \n            WHERE username = $2"
+  },
+  "d2041f1463db3967dd734540c925a4b079be8136ca5632358d94f0024baf3696": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int8"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Varchar",
+          "Text"
+        ]
+      }
+    },
+    "query": "INSERT INTO credentials (username, password)\n            VALUES ($1, crypt($2, gen_salt('bf')))\n            RETURNING id"
+  }
+}

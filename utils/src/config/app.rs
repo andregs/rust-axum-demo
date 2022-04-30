@@ -1,6 +1,7 @@
 use super::Config;
 use crate::controller;
 use axum::{http::Request, routing::IntoMakeService, Extension, Router, Server};
+use figment::Profile;
 use hyper::server::conn::AddrIncoming;
 use std::net::SocketAddr;
 use tower_http::trace::TraceLayer;
@@ -23,16 +24,24 @@ pub fn build_server() -> Server<AddrIncoming, IntoMakeService<Router>> {
 
 pub fn configure() -> Config {
     let cfg = Config::load().expect("Unable to parse configuration");
+    init_tracer_subscriber(&cfg);
+    cfg
+}
 
+pub fn configure_for(profile: Profile) -> Config {
+    let cfg = Config::load_for(profile).expect("Unable to parse configuration");
+    init_tracer_subscriber(&cfg);
+    cfg
+}
+
+fn init_tracer_subscriber(cfg: &Config) {
     // https://www.lpalmieri.com/posts/2020-09-27-zero-to-production-4-are-we-observable-yet/
     tracing_subscriber::registry()
         .with(fmt::layer())
         .with(cfg.new_env_filter())
-        .init();
+        .init(); // FIXME change to panic-free try_init()
 
     info!(%cfg.profile, %cfg.hostname, "Configured");
-
-    cfg
 }
 
 pub fn build_router(cfg: Config) -> Router {

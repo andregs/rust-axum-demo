@@ -5,5 +5,3 @@ members = [
   "web",
   "migrate-db",
 ]
-
-default-members = ["web"]
