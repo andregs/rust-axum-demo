@@ -3,7 +3,6 @@ kind: Config
 metadata:
   name: migrate-db
 requires:
-- path: ../storage
 - path: ../rust-builder
 build:
   artifacts:
