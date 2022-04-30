@@ -6,6 +6,5 @@ kind: Config
 metadata:
   name: microverse
 requires:
-- path: ./storage
 - path: ./migrate-db
 - path: ./web

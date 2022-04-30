@@ -2,17 +2,20 @@ apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
   name: migrate-db
+requires:
+- path: ../storage
+- path: ../rust-builder
 build:
   artifacts:
   - image: andregs/migrate-db
     context: ..
+    requires:
+    - image: andregs/rust-builder
+      alias: BASE
     docker:
       dockerfile: ./migrate-db/Dockerfile
       cacheFrom:
-      - "rust:1.60.0"
-      - "lukemathwalker/cargo-chef:latest-rust-1.60.0"
-      - "andregs/axum-demo"
-      - "andregs/migrate-db"
+      - "andregs/rust-builder"
 deploy:
   kubectl:
     manifests:

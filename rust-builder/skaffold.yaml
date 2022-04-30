@@ -1,0 +1,13 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: rust-builder
+build:
+  artifacts:
+  - image: andregs/rust-builder
+    context: ..
+    docker:
+      dockerfile: ./rust-builder/Dockerfile
+      cacheFrom:
+      - "rust:1.60.0"
+      - "lukemathwalker/cargo-chef:latest-rust-1.60.0"
