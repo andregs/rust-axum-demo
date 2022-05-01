@@ -1,8 +1,6 @@
 use super::*;
 use crate::config::*;
-use double_checked_cell_async::DoubleCheckedCell;
 use figment::Profile;
-use lazy_static::lazy_static;
 use uuid::Uuid;
 
 mod insert_credentials {
@@ -92,17 +90,10 @@ async fn before_each() -> (Transaction, PostgresCredentialRepo) {
     (tx, repo)
 }
 
-async fn connect() -> &'static Pool<Postgres> {
-    POOL.get_or_init(async {
-        let test_profile = Profile::const_new("test");
-        let cfg = app::configure_for(test_profile);
-        db::connect_pool(&cfg).await
-    })
-    .await
-}
-
-lazy_static! {
-    static ref POOL: DoubleCheckedCell<Pool<Postgres>> = DoubleCheckedCell::new();
+async fn connect() -> Pool<Postgres> {
+    let test_profile = Profile::const_new("test");
+    let cfg = app::configure_for(test_profile);
+    db::connect_pool(&cfg).await
 }
 
 fn new_random_credentials() -> Credentials {

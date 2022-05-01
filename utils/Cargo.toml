@@ -25,6 +25,4 @@ uuid = {version = "1.0", features = ["v4", "fast-rng", "macro-diagnostics"]}
 validator = {version = "0.14", features = ["derive"]}
 
 [dev-dependencies]
-double-checked-cell-async = "2.0"
-lazy_static = "1.4"
 mockall = "0.11"

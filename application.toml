@@ -1,5 +1,5 @@
 [test]
-log_level = "warn"
+log_level = "warn,utils::config::app=error"
 
 [local]
 database_url = "postgres://postgres:mysecretpassword@localhost/axum_demo"

@@ -1,5 +1,6 @@
-use crate::{model::*, validation::*};
-use axum::{http::StatusCode, routing::post, Json, Router};
+use crate::{config::app::AppContext, model::*, service::*, validation::*};
+use axum::{http::StatusCode, response::IntoResponse, routing::post, Json, Router};
+use hyper::header::LOCATION;
 use tracing::{debug, info};
 
 pub fn router() -> Router {
@@ -9,10 +10,18 @@ pub fn router() -> Router {
         .route("/authenticate", post(authenticate))
 }
 
-#[tracing::instrument]
-async fn register(Valid(credentials): Valid<Credentials>) -> (StatusCode, Json<Credentials>) {
+#[tracing::instrument(skip(ctx))]
+async fn register(Valid(credentials): Valid<Credentials>, ctx: AppContext) -> Result<impl IntoResponse> {
     debug!("Registering a new user");
-    (StatusCode::CREATED, Json(credentials))
+
+    // let service = AuthService::new(db, redis);
+    let service = AuthService::new(&ctx.db);
+    let new_id: i64 = service.register(credentials).await?;
+
+    // TODO create a /profile/<username> route that requires authentication
+    let location = format!("/profile/{}", new_id);
+    let headers = [(LOCATION, location)];
+    Ok((StatusCode::CREATED, headers))
 }
 
 #[tracing::instrument]

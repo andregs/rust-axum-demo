@@ -1,8 +1,6 @@
 use crate::model::*;
-use anyhow::anyhow;
 use axum::async_trait;
 use sqlx::{Executor, Pool, Postgres};
-use std::borrow::Cow;
 
 pub type Connection = Pool<Postgres>;
 pub type Transaction = sqlx::Transaction<'static, Postgres>;
@@ -75,32 +73,3 @@ impl CredentialRepoApi for PostgresCredentialRepo {
 
 #[cfg(test)]
 mod tests;
-
-pub type Result<T> = core::result::Result<T, Error>;
-
-#[derive(thiserror::Error, Debug)]
-pub enum Error {
-    #[error("Duplicated username.")]
-    Duplicated(#[source] sqlx::Error),
-
-    #[error("Username is too big.")]
-    TooBig(#[source] sqlx::Error),
-
-    #[error("Sorry, we failed.")]
-    Other(#[from] anyhow::Error),
-}
-
-impl From<sqlx::Error> for Error {
-    fn from(source: sqlx::Error) -> Self {
-        if let sqlx::Error::Database(ref err) = source {
-            // https://www.postgresql.org/docs/current/errcodes-appendix.html
-            if err.code() == Some(Cow::from("23505")) {
-                return Error::Duplicated(source);
-            } else if err.code() == Some(Cow::from("22001")) {
-                return Error::TooBig(source);
-            }
-        }
-
-        Error::Other(anyhow!(source))
-    }
-}

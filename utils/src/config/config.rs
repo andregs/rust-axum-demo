@@ -10,7 +10,7 @@ use std::{
 };
 use tracing_subscriber::EnvFilter;
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct Config {
     pub profile: Profile,
     pub hostname: String,
@@ -29,7 +29,7 @@ impl Default for Config {
             address: Ipv4Addr::LOCALHOST.into(),
             port: 3000,
             log_level: "info,tower_http=debug".into(),
-            database_url: "postgres://postgres:mysecretpassword@localhost/axum_demo".into(),
+            database_url: "postgres://localhost/axum_demo".into(),
             redis_url: "redis://localhost:6379".into(),
         }
     }

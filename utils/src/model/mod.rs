@@ -7,7 +7,7 @@ use validator::Validate;
 // to make it harder leaking them on logs.
 // there's https://crates.io/crates/secrecy but I couldn't make it work with validator
 
-#[derive(Serialize, Deserialize, Validate, PartialEq, Eq, Debug, Clone)]
+#[derive(Serialize, Deserialize, Validate, PartialEq, Eq, Debug)]
 pub struct Credentials {
     #[validate(
         length(min = 1, max = 42, message = "Username must be between 1 and 42 characters."),
@@ -24,14 +24,19 @@ pub struct Credentials {
 
 static USERNAME_RE: Lazy<Regex> = lazy_regex!("^([A-Za-z]+)([0-9A-Za-z]*)$");
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct LoginOk {
     pub token: Token,
 }
 
 pub type Token = String;
 
-#[derive(Serialize, Deserialize, PartialEq, Eq, Debug, Clone)]
+#[derive(Serialize, Deserialize, PartialEq, Eq, Debug)]
 pub struct AuthOk {
     pub username: String,
 }
+
+mod error;
+pub use error::*;
+
+pub type Result<T, E = Error> = std::result::Result<T, E>;

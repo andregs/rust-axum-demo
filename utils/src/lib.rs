@@ -5,3 +5,4 @@ mod controller;
 pub mod model;
 mod validation;
 mod credential_repo;
+mod service;
