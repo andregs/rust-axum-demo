@@ -30,7 +30,7 @@ pub enum Error {
     #[error(transparent)]
     AxumJsonRejection(#[from] JsonRejection),
 
-    #[error("Sorry, we failed.")]
+    #[error(transparent)]
     Other(#[from] anyhow::Error),
 }
 
@@ -66,7 +66,7 @@ impl IntoResponse for Error {
                 JsonRejection::MissingJsonContentType(source) => (StatusCode::UNSUPPORTED_MEDIA_TYPE, format!("{}", source)),
                 _ => (StatusCode::BAD_REQUEST, "Unknown Reason".to_string()),
             },
-            Error::Other(_) => (StatusCode::INTERNAL_SERVER_ERROR, self.to_string()),
+            Error::Other(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Sorry, we failed.".to_string()),
         };
 
         let headers = if status == StatusCode::UNAUTHORIZED {

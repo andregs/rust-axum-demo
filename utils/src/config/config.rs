@@ -1,3 +1,5 @@
+use crate::model::Result;
+use anyhow::Context;
 use figment::{
     providers::{Env, Format, Serialized, Toml},
     value::{Dict, Map},
@@ -8,7 +10,9 @@ use std::{
     ffi::OsString,
     net::{IpAddr, Ipv4Addr},
 };
-use tracing_subscriber::EnvFilter;
+use tracing::{info, subscriber, warn};
+use tracing_log::LogTracer;
+use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct Config {
@@ -43,21 +47,32 @@ fn hostname() -> String {
 }
 
 impl Config {
-    pub fn load() -> Result<Self, figment::Error> {
+    pub fn load() -> Result<Self> {
         let profile = Profile::from_env_or("APP_PROFILE", Profile::Default);
         Self::load_for(profile)
     }
 
-    pub fn load_for(profile: Profile) -> Result<Self, figment::Error> {
-        Figment::from(Config::default())
+    pub fn load_for(profile: Profile) -> Result<Self> {
+        let cfg = Figment::from(Config::default())
             .merge(Toml::file("application.toml").nested())
             .merge(Env::prefixed("APP_").global())
             .select(profile)
             .extract::<Config>()
-    }
+            .context("Unable to parse app configuration")?;
 
-    pub fn new_env_filter(&self) -> EnvFilter {
-        EnvFilter::try_new(&self.log_level).expect("Unable to set the log level")
+        if let Err(err) = LogTracer::init() {
+            warn!(%cfg.profile, %cfg.hostname, %err, "Log tracer init failure");
+        }
+
+        // https://www.lpalmieri.com/posts/2020-09-27-zero-to-production-4-are-we-observable-yet/
+        let filter = EnvFilter::try_new(&cfg.log_level).context("Unable to set the log level")?;
+        let subscriber = tracing_subscriber::registry().with(fmt::layer()).with(filter);
+        if let Err(err) = subscriber::set_global_default(subscriber) {
+            warn!(%cfg.profile, %cfg.hostname, %err, "Tracing subscriber init failure");
+        }
+
+        info!(%cfg.profile, %cfg.hostname, "Configured");
+        Ok(cfg)
     }
 }
 

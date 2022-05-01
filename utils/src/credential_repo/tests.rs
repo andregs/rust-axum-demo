@@ -92,8 +92,8 @@ async fn before_each() -> (Transaction, PostgresCredentialRepo) {
 
 async fn connect() -> Pool<Postgres> {
     let test_profile = Profile::const_new("test");
-    let cfg = app::configure_for(test_profile);
-    db::connect_pool(&cfg).await
+    let cfg = Config::load_for(test_profile).unwrap();
+    db::connect(&cfg).await.unwrap()
 }
 
 fn new_random_credentials() -> Credentials {

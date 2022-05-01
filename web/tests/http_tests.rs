@@ -5,7 +5,7 @@ use axum::{
 use hyper::body;
 use serde_json::{json, Value};
 use tower::ServiceExt;
-use utils::config::{self, app::Profile};
+use utils::config::{self, Config, Profile};
 
 // see more examples at https://github.com/tokio-rs/axum/blob/main/examples/testing/src/main.rs
 
@@ -13,8 +13,8 @@ use utils::config::{self, app::Profile};
 async fn it_should_pass_e2e_happy_path() {
     // TODO automate the clearing of test database before each execution
     let test_profile = Profile::const_new("test");
-    let config = config::app::configure_for(test_profile);
-    let router = config::app::build_router(config).await;
+    let config = Config::load_for(test_profile).unwrap();
+    let router = config::app::new_router(config).await.unwrap();
 
     let req_json = json!({ "username": "foo", "password": "12345678" });
     let bytes = serde_json::to_vec(&req_json).unwrap();
