@@ -145,6 +145,7 @@ dependencies = [
  "tokio",
  "tower",
  "utils",
+ "uuid",
 ]
 
 [[package]]

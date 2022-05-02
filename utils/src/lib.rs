@@ -28,7 +28,8 @@ pub async fn start_server() -> Result<()> {
         .await
         .context("HTTP server error")?;
 
-    info!(cfg.address = %address.ip(), cfg.port = %address.port(), "Bye!");
+    // TODO graceful shutdown
+    info!(cfg.address = %address.ip(), cfg.port = %address.port(), "Bye!"); // this is never called
     Ok(())
 }
 
