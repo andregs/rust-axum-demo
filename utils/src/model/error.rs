@@ -22,8 +22,9 @@ pub enum Error {
     #[error("Username and/or password mismatch.")]
     BadCredentials,
 
-    // #[error("Token does not represent an authenticated user.")]
-    // BadToken,
+    #[error("Token does not represent an authenticated user.")]
+    BadToken,
+
     #[error(transparent)]
     ValidationError(#[from] validator::ValidationErrors),
 
@@ -55,7 +56,7 @@ impl IntoResponse for Error {
         let (status, message) = match self {
             Error::Duplicated(_) => (StatusCode::BAD_REQUEST, self.to_string()),
             Error::TooBig(_) => (StatusCode::BAD_REQUEST, self.to_string()),
-            Error::BadCredentials => (StatusCode::UNAUTHORIZED, self.to_string()),
+            Error::BadCredentials | Error::BadToken => (StatusCode::UNAUTHORIZED, self.to_string()),
             Error::ValidationError(errors) => (
                 StatusCode::BAD_REQUEST,
                 format!("{}", errors).replace(", ", " ").replace('\n', " "),

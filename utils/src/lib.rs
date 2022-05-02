@@ -15,6 +15,7 @@ pub mod model;
 mod validation;
 mod credential_repo;
 mod service;
+mod token_repo;
 
 pub async fn start_server() -> Result<()> {
     let cfg = Config::load()?;

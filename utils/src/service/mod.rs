@@ -1,6 +1,6 @@
-// use redis::Client;
-use crate::{credential_repo::*, model::*};
+use crate::{credential_repo::*, model::*, token_repo::*};
 use axum::async_trait;
+use redis::Client;
 use sqlx::{Pool, Postgres};
 use uuid::Uuid;
 
@@ -11,31 +11,31 @@ pub trait AuthServiceApi {
     async fn authenticate(&self, token: Token) -> Result<String>;
 }
 
-pub struct AuthService<CR = PostgresCredentialRepo /*, TR = RedisTokenRepo */>
+pub struct AuthService<CR = PostgresCredentialRepo, TR = RedisTokenRepo>
 where
     CR: CredentialRepoApi,
-    // TR: TokenRepoApi,
+    TR: TokenRepoApi,
 {
     db: Pool<Postgres>,
     credential_repo: CR,
-    // token_repo: TR,
+    token_repo: TR,
 }
 
 impl AuthService {
-    pub fn new(db: &Pool<Postgres> /*, redis: &Client*/) -> Self {
+    pub fn new(db_pool: &Pool<Postgres>, redis_client: &Client) -> Self {
         Self {
-            db: db.clone(),
+            db: db_pool.clone(),
             credential_repo: PostgresCredentialRepo,
-            // token_repo: RedisTokenRepo::new(redis),
+            token_repo: RedisTokenRepo::new(redis_client),
         }
     }
 }
 
 #[async_trait]
-impl<CR> AuthServiceApi for AuthService<CR>
+impl<CR, TR> AuthServiceApi for AuthService<CR, TR>
 where
     CR: CredentialRepoApi + Sync + Send,
-    // TR: TokenRepoApi + Sync + Send,
+    TR: TokenRepoApi + Sync + Send,
 {
     async fn register(&self, credentials: Credentials) -> Result<i64> {
         let mut tx = self.db.begin().await?;
@@ -55,7 +55,7 @@ where
         match is_valid {
             Ok(true) => {
                 let uuid = Uuid::new_v4().to_string();
-                // self.token_repo.save_token(&uuid, &credentials.username).await?;
+                self.token_repo.save_token(&uuid, &credentials.username).await?;
                 Ok(uuid)
             }
             Ok(false) => Err(Error::BadCredentials),
@@ -63,9 +63,8 @@ where
         }
     }
 
-    async fn authenticate(&self, _token: Token) -> Result<String> {
-        // self.token_repo.get_username(&token).await
-        Ok("foo".into())
+    async fn authenticate(&self, token: Token) -> Result<String> {
+        self.token_repo.get_username(&token).await
     }
 }
 

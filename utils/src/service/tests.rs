@@ -52,7 +52,7 @@ mod login {
             .once()
             .return_once(|_, _| Ok(true));
 
-        // svc.token_repo.expect_save_token().once().return_once(|_, _| Ok(()));
+        svc.token_repo.expect_save_token().once().return_once(|_, _| Ok(()));
 
         let (username, password) = ("a".into(), "b".into());
         let credentials = Credentials { username, password };
@@ -70,7 +70,7 @@ mod login {
             .once()
             .return_once(|_, _| Ok(false));
 
-        // svc.token_repo.expect_save_token().never();
+        svc.token_repo.expect_save_token().never();
 
         let (username, password) = ("a".into(), "b".into());
         let credentials = Credentials { username, password };
@@ -87,21 +87,21 @@ mod login {
 
 // aux -----
 
-async fn before_each() -> AuthService<MockCredentialRepoApi /*, MockTokenRepoApi */> {
-    AuthService::<MockCredentialRepoApi /*, MockTokenRepoApi */>::new().await
+async fn before_each() -> AuthService<MockCredentialRepoApi, MockTokenRepoApi> {
+    AuthService::<MockCredentialRepoApi, MockTokenRepoApi>::new().await
 }
 
-impl AuthService<MockCredentialRepoApi /*, MockTokenRepoApi */> {
+impl AuthService<MockCredentialRepoApi, MockTokenRepoApi> {
     // TODO AuthService unit tests connect to DB and trigger empty TXs, since
     // actual queries are mocked out, but ideally they shouldn't need a DB.
     async fn new() -> Self {
         let db = connect().await;
         let credential_repo = MockCredentialRepoApi::new();
-        // let token_repo = MockTokenRepoApi::new();
+        let token_repo = MockTokenRepoApi::new();
         Self {
             db,
             credential_repo,
-            // token_repo,
+            token_repo,
         }
     }
 }

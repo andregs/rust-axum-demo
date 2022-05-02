@@ -14,8 +14,7 @@ pub fn router() -> Router {
 async fn register(Valid(credentials): Valid<Credentials>, ctx: AppContext) -> Result<impl IntoResponse> {
     debug!("Registering a new user");
 
-    // let service = AuthService::new(db, redis);
-    let service = AuthService::new(&ctx.db);
+    let service = AuthService::new(&ctx.db, &ctx.redis);
     let new_id: i64 = service.register(credentials).await?;
 
     // TODO create a /profile/<username> route that requires authentication

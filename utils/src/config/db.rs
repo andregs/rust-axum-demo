@@ -1,5 +1,3 @@
-use std::time::Duration;
-
 use crate::{config::Config, model::Result};
 use anyhow::Context;
 use log::LevelFilter;
@@ -7,6 +5,7 @@ use sqlx::{
     postgres::{PgConnectOptions, PgPoolOptions},
     ConnectOptions, Pool, Postgres,
 };
+use std::time::Duration;
 
 pub async fn connect(cfg: &Config) -> Result<Pool<Postgres>> {
     let mut options: PgConnectOptions = cfg.database_url.parse()?;

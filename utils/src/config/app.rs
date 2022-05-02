@@ -1,4 +1,9 @@
-use crate::{config::*, controller, model::Result};
+use crate::{
+    config::{db, redis, Config},
+    controller,
+    model::Result,
+};
+use ::redis::Client;
 use axum::{http::Request, Extension, Router};
 use sqlx::{Pool, Postgres};
 use std::sync::Arc;
@@ -15,6 +20,7 @@ pub async fn new_router(cfg: Config) -> Result<Router> {
 
     let context = Arc::new(ContextData {
         db: db::connect(&cfg).await?,
+        redis: redis::open(&cfg)?,
         config: cfg,
     });
 
@@ -27,8 +33,9 @@ pub async fn new_router(cfg: Config) -> Result<Router> {
 }
 
 pub struct ContextData {
-    pub db: Pool<Postgres>,
     pub config: Config,
+    pub db: Pool<Postgres>,
+    pub redis: Client,
 }
 
 pub type AppContext = Extension<Arc<ContextData>>;
