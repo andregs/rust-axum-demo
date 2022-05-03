@@ -1,3 +1,3 @@
 ```sh
-DATABASE_URL=$(dasel -f application.toml -r toml local.database_url) cargo sqlx prepare --merged
+DATABASE_URL=$(dasel -f application.toml default --format 'postgres://{{.db_username}}:{{.db_password}}@{{.db_host}}/{{.db_name}}') cargo sqlx prepare --merged
 ```

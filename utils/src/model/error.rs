@@ -8,7 +8,7 @@ use axum::{
 use hyper::{header::WWW_AUTHENTICATE, HeaderMap};
 use serde::Serialize;
 use std::borrow::Cow;
-use tracing::{debug, Level};
+use tracing::{debug, error, Level};
 use uuid::Uuid;
 
 #[derive(thiserror::Error, Debug)]
@@ -67,7 +67,10 @@ impl IntoResponse for Error {
                 JsonRejection::MissingJsonContentType(source) => (StatusCode::UNSUPPORTED_MEDIA_TYPE, format!("{}", source)),
                 _ => (StatusCode::BAD_REQUEST, "Unknown Reason".to_string()),
             },
-            Error::Other(_) => (StatusCode::INTERNAL_SERVER_ERROR, "Sorry, we failed.".to_string()),
+            Error::Other(_) => {
+                error!("{:?}", self);
+                (StatusCode::INTERNAL_SERVER_ERROR, "Sorry, we failed.".to_string())
+            }
         };
 
         let headers = if status == StatusCode::UNAUTHORIZED {

@@ -21,8 +21,17 @@ pub struct Config {
     pub address: IpAddr,
     pub port: u16,
     pub log_level: String,
-    pub database_url: String,
+    pub db_username: String,
+    pub db_password: String,
+    pub db_host: String,
+    pub db_port: u16,
+    pub db_name: String,
     pub redis_url: String,
+    pub slow_sql_seconds: u64,
+    pub db_pool_min_connections: u32,
+    pub db_pool_max_connections: u32,
+    pub db_pool_connect_timeout: u64,
+    pub db_pool_idle_timeout: u64,
 }
 
 impl Default for Config {
@@ -33,8 +42,17 @@ impl Default for Config {
             address: Ipv4Addr::LOCALHOST.into(),
             port: 3000,
             log_level: "info,tower_http=debug".into(),
-            database_url: "postgres://localhost/axum_demo".into(),
+            db_username: "stanley".into(),
+            db_password: "ipkiss".into(),
+            db_host: "localhost".into(),
+            db_port: 5432,
+            db_name: "axum_demo".into(),
             redis_url: "redis://localhost:6379".into(),
+            slow_sql_seconds: 1,
+            db_pool_min_connections: 0,
+            db_pool_max_connections: 80,
+            db_pool_connect_timeout: 15,
+            db_pool_idle_timeout: 5 * 60,
         }
     }
 }

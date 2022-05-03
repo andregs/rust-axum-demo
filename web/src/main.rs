@@ -6,3 +6,5 @@ use utils::model::Result;
 async fn main() -> Result<()> {
     utils::start_server().await
 }
+
+// TODO compute test coverage

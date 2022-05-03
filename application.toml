@@ -1,8 +1,12 @@
 [default]
-database_url = "postgres://postgres:mysecretpassword@localhost/axum_demo"
+db_host = "localhost"
+db_name = "axum_demo"
+db_password = "mysecretpassword"
+db_username = "postgres"
 
 [test]
 log_level = "warn,utils::config::config=error"
 
 [cloud]
-database_url = "postgres://postgres:mysecretpassword@postgres/axum_demo"
+db_host = "postgres"
+redis_url = "redis://redis:6379"
