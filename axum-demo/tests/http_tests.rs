@@ -3,13 +3,13 @@ use axum::{
     body::Body,
     http::{header, Method, Request, StatusCode},
 };
+use axum_demo::{
+    config::{context, Config, Profile},
+    model::{AuthOk, LoginOk},
+};
 use hyper::{body, Client};
 use serde_json::{json, Value};
 use std::net::{SocketAddr, TcpListener};
-use utils::{
-    config::{self, Config, Profile},
-    model::{AuthOk, LoginOk},
-};
 use uuid::{Uuid, Variant::RFC4122};
 
 // see more examples at https://github.com/tokio-rs/axum/blob/main/examples/testing/src/main.rs
@@ -67,7 +67,7 @@ async fn it_should_pass_e2e_happy_path() -> Result<()> {
 async fn start_server() -> Result<String> {
     let test_profile = Profile::const_new("test");
     let config = Config::load_for(test_profile)?;
-    let router = config::app::new_router(config).await?;
+    let router = context::new_router(config).await?;
     let listener = TcpListener::bind("0.0.0.0:0".parse::<SocketAddr>().unwrap())?;
     let address = listener.local_addr()?;
 

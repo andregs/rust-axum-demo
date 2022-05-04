@@ -1,4 +1,4 @@
-# kubectl create deployment axum-demo --image=andregs/axum-demo --dry-run=client -o yaml > web/k8s/axum-demo-deployment.yaml
+# kubectl create deployment axum-demo --image=andregs/axum-demo --dry-run=client -o yaml > axum-demo/k8s/axum-demo-deployment.yaml
 
 apiVersion: apps/v1
 kind: Deployment

@@ -1,9 +1,10 @@
 use crate::model::Result;
 use anyhow::Context;
+pub use figment::Profile;
 use figment::{
     providers::{Env, Format, Serialized, Toml},
     value::{Dict, Map},
-    Figment, Metadata, Profile, Provider,
+    Figment, Metadata, Provider,
 };
 use serde::{Deserialize, Serialize};
 use std::{
@@ -57,13 +58,6 @@ impl Default for Config {
     }
 }
 
-fn hostname() -> String {
-    hostname::get()
-        .unwrap_or_else(|_| OsString::from("where-am-i"))
-        .to_string_lossy()
-        .into_owned() // why rust, why!
-}
-
 impl Config {
     pub fn load() -> Result<Self> {
         let profile = Profile::from_env_or("APP_PROFILE", Profile::Default);
@@ -103,3 +97,12 @@ impl Provider for Config {
         Serialized::defaults(self).data()
     }
 }
+
+fn hostname() -> String {
+    hostname::get()
+        .unwrap_or_else(|_| OsString::from("where-am-i"))
+        .to_string_lossy()
+        .into_owned() // why rust, why!
+}
+
+pub mod context;

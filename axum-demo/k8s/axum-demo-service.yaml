@@ -1,4 +1,4 @@
-# kubectl create service clusterip axum-demo --tcp=3000:3000 -o yaml --dry-run=client > web/k8s/axum-demo-service.yaml
+# kubectl create service clusterip axum-demo --tcp=3000:3000 -o yaml --dry-run=client > axum-demo/k8s/axum-demo-service.yaml
 
 apiVersion: v1
 kind: Service

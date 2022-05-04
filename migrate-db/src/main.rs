@@ -1,9 +1,9 @@
-use std::time::Duration;
-use tracing::info;
-use utils::{
-    config::{db, Config},
+use axum_demo::{
+    config::{context::db, Config},
     model::Result,
 };
+use std::time::Duration;
+use tracing::info;
 
 #[tokio::main]
 async fn main() -> Result<()> {

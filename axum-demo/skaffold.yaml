@@ -1,7 +1,7 @@
 apiVersion: skaffold/v2beta28
 kind: Config
 metadata:
-  name: web
+  name: axum-demo
 requires:
 - path: ../rust-builder
 build:
@@ -12,7 +12,7 @@ build:
     - image: andregs/rust-builder
       alias: BASE
     docker:
-      dockerfile: ./web/Dockerfile
+      dockerfile: ./axum-demo/Dockerfile
       cacheFrom:
       - "andregs/rust-builder"
 deploy:
@@ -23,9 +23,3 @@ portForward:
 - resourceType: service
   resourceName: axum-demo
   port: 3000
-
-# TODO refactor
-# rename web to axum-demo-bin
-# rename utils to axum-demo
-
-# should i keep them separated or merge them back?

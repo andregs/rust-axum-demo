@@ -1,5 +1,5 @@
 use super::*;
-use crate::config::{self, Config, Profile};
+use crate::config::{context::redis, Config, Profile};
 use uuid::Uuid;
 
 #[tokio::test]
@@ -25,6 +25,6 @@ async fn test_save_and_check() {
 fn before_each() -> RedisTokenRepo {
     let test_profile = Profile::const_new("test");
     let cfg = Config::load_for(test_profile).unwrap();
-    let client = config::redis::open(&cfg).unwrap();
+    let client = redis::open(&cfg).unwrap();
     RedisTokenRepo::new(&client)
 }

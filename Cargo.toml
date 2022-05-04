@@ -1,7 +1,6 @@
 [workspace]
 
 members = [
-  "utils",
-  "web",
+  "axum-demo",
   "migrate-db",
 ]

@@ -1,7 +1,7 @@
 #![forbid(unsafe_code)]
 
 use crate::{
-    config::{app, Config},
+    config::{context, Config},
     model::*,
 };
 use anyhow::Context;
@@ -20,7 +20,7 @@ mod token_repo;
 pub async fn start_server() -> Result<()> {
     let cfg = Config::load()?;
     let address = SocketAddr::new(cfg.address, cfg.port);
-    let router = app::new_router(cfg).await?;
+    let router = context::new_router(cfg).await?;
 
     info!(cfg.address = %address.ip(), cfg.port = %address.port(), "Starting server");
     Server::try_bind(&address)
@@ -29,9 +29,6 @@ pub async fn start_server() -> Result<()> {
         .await
         .context("HTTP server error")?;
 
-    // TODO graceful shutdown
     info!(cfg.address = %address.ip(), cfg.port = %address.port(), "Bye!"); // this is never called
     Ok(())
 }
-
-// TODO types like Result and Error should be exported from here, right?

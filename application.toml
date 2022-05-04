@@ -5,8 +5,10 @@ db_password = "mysecretpassword"
 db_username = "postgres"
 
 [test]
-log_level = "warn,utils::config::config=error"
+log_level = "warn,axum_demo::config=error"
 
 [cloud]
 db_host = "postgres"
 redis_url = "redis://redis:6379"
+
+# TODO configmap
