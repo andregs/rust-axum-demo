@@ -19,6 +19,13 @@ spec:
       labels:
         app: axum-demo
     spec:
+      volumes:
+      - name: config
+        configMap:
+          name: app-config
+          items:
+          - key: "application.toml"
+            path: "application.toml"
       containers:
       - image: andregs/axum-demo
         name: axum-demo
@@ -27,5 +34,12 @@ spec:
         - name: RUST_BACKTRACE
           value: "1"
         - name: APP_PROFILE
-          value: cloud
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: app_profile
+        volumeMounts:
+        - name: config
+          mountPath: "/app/config"
+          readOnly: true
 status: {}

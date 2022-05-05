@@ -66,7 +66,7 @@ impl Config {
 
     pub fn load_for(profile: Profile) -> Result<Self> {
         let cfg = Figment::from(Config::default())
-            .merge(Toml::file("application.toml").nested())
+            .merge(Toml::file("config/application.toml").nested())
             .merge(Env::prefixed("APP_").global())
             .select(profile)
             .extract::<Config>()

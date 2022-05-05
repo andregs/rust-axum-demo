@@ -1,5 +1,12 @@
+# our custom images won't rebuild when any of these change
+
 .vscode/
+.rustfmt.toml
+
+config/
 storage/
 target/
+
 **/k8s/
 **/tests/
+**/*.md

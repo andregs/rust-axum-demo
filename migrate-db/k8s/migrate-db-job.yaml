@@ -11,6 +11,13 @@ spec:
     metadata:
       creationTimestamp: null
     spec:
+      volumes:
+      - name: config
+        configMap:
+          name: app-config
+          items:
+          - key: "application.toml"
+            path: "application.toml"
       containers:
       - image: andregs/migrate-db
         name: migrate-db
@@ -19,7 +26,14 @@ spec:
         - name: RUST_BACKTRACE
           value: "1"
         - name: APP_PROFILE
-          value: cloud
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: app_profile
+        volumeMounts:
+        - name: config
+          mountPath: "/app/config"
+          readOnly: true
 
       # pod's container will not be restarted upon failure, but
       # will result in a new pod for the job until backoffLimit

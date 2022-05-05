@@ -11,4 +11,5 @@ log_level = "warn,axum_demo::config=error"
 db_host = "postgres"
 redis_url = "redis://redis:6379"
 
-# TODO configmap
+# TODO skaffold.yaml here, with kustomize to create & deploy the configmap
+# kubectl create configmap app-config --from-literal=app_profile=cloud --from-file=config/application.toml
