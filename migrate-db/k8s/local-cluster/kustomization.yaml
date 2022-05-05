@@ -5,4 +5,4 @@ configMapGenerator:
 - name: app-config
   behavior: merge
   literals:
-  - app_profile=cloud
+  - app_profile=local-cluster

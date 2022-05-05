@@ -18,14 +18,18 @@ build:
 deploy:
   kustomize:
     paths:
-    - ./k8s/default
-profiles:
-- name: cloud
-  deploy:
-    kustomize:
-      paths:
-      - ./k8s/cloud
+    - ./k8s/local-cluster
+#profiles:
+#- name: test
+#  deploy:
+#    kustomize:
+#      paths:
+#      - ./k8s/test
 portForward:
 - resourceType: service
   resourceName: axum-demo
   port: 3000
+
+# TODO perhaps I can change the default profile from 'local-cluster' to 'default'
+# and then use the default to spin up storage and execute tests locally (not on cloud)
+# and execute the app locally too, with migrations and everything

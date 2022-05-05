@@ -18,10 +18,4 @@ build:
 deploy:
   kustomize:
     paths:
-    - ./k8s/default
-profiles:
-- name: cloud
-  deploy:
-    kustomize:
-      paths:
-      - ./k8s/cloud
+    - ./k8s/local-cluster

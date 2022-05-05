@@ -9,6 +9,6 @@ db_username = "postgres"
 [test]
 log_level = "warn"
 
-[cloud]
+[local-cluster]
 db_host = "postgres"
 redis_url = "redis://redis:6379"
