@@ -1,0 +1,3 @@
+resources:
+- ../../../config/
+- migrate-db-job.yaml

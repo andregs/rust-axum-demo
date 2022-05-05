@@ -8,7 +8,6 @@ metadata:
     app: axum-demo
   name: axum-demo
 spec:
-  replicas: 2
   selector:
     matchLabels:
       app: axum-demo
@@ -24,8 +23,8 @@ spec:
         configMap:
           name: app-config
           items:
-          - key: "application.toml"
-            path: "application.toml"
+          - key: application.toml
+            path: application.toml
       containers:
       - image: andregs/axum-demo
         name: axum-demo
@@ -38,8 +37,9 @@ spec:
             configMapKeyRef:
               name: app-config
               key: app_profile
+              optional: true
         volumeMounts:
         - name: config
-          mountPath: "/app/config"
+          mountPath: /app/config
           readOnly: true
 status: {}

@@ -14,9 +14,14 @@ build:
     docker:
       dockerfile: ./migrate-db/Dockerfile
       cacheFrom:
-      - "andregs/rust-builder"
+      - andregs/rust-builder
 deploy:
-  kubectl:
-    manifests:
-    - ./k8s/*.yaml
-    
+  kustomize:
+    paths:
+    - ./k8s/default
+profiles:
+- name: cloud
+  deploy:
+    kustomize:
+      paths:
+      - ./k8s/cloud

@@ -1,0 +1,8 @@
+resources:
+- ../default
+
+configMapGenerator:
+- name: app-config
+  behavior: merge
+  literals:
+  - app_profile=cloud

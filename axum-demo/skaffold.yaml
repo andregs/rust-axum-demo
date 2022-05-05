@@ -14,11 +14,17 @@ build:
     docker:
       dockerfile: ./axum-demo/Dockerfile
       cacheFrom:
-      - "andregs/rust-builder"
+      - andregs/rust-builder
 deploy:
-  kubectl:
-    manifests:
-    - ./k8s/*.yaml
+  kustomize:
+    paths:
+    - ./k8s/default
+profiles:
+- name: cloud
+  deploy:
+    kustomize:
+      paths:
+      - ./k8s/cloud
 portForward:
 - resourceType: service
   resourceName: axum-demo
