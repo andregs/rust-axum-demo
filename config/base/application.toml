@@ -1,0 +1,11 @@
+[default]
+# we're duplicating the password from k8s secret here, but it's 
+# useful for playing locally with cargo test && cargo run --bin axum-demo
+db_password = "password for dev only!"
+
+[test]
+log_level = "warn,axum_demo::config=error"
+
+[local-cluster]
+db_host = "postgres"
+redis_url = "redis://redis:6379"

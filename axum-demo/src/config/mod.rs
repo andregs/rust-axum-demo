@@ -11,7 +11,7 @@ use std::{
     ffi::OsString,
     net::{IpAddr, Ipv4Addr},
 };
-use tracing::{info, subscriber, warn};
+use tracing::{debug, info, subscriber, warn};
 use tracing_log::LogTracer;
 use tracing_subscriber::{fmt, prelude::*, EnvFilter};
 
@@ -43,11 +43,11 @@ impl Default for Config {
             address: Ipv4Addr::LOCALHOST.into(),
             port: 3000,
             log_level: "info,tower_http=debug".into(),
-            db_username: "stanley".into(),
-            db_password: "ipkiss".into(),
+            db_username: "postgres".into(),
+            db_password: "".into(),
             db_host: "localhost".into(),
             db_port: 5432,
-            db_name: "axum_demo".into(),
+            db_name: "postgres".into(),
             redis_url: "redis://localhost:6379".into(),
             slow_sql_seconds: 1,
             db_pool_min_connections: 0,
@@ -66,7 +66,7 @@ impl Config {
 
     pub fn load_for(profile: Profile) -> Result<Self> {
         let cfg = Figment::from(Config::default())
-            .merge(Toml::file("config/application.toml").nested())
+            .merge(Toml::file("config/base/application.toml").nested())
             .merge(Env::prefixed("APP_").global())
             .select(profile)
             .extract::<Config>()
@@ -84,6 +84,7 @@ impl Config {
         }
 
         info!(%cfg.profile, %cfg.hostname, "Configured");
+        debug!("{:?}", cfg);
         Ok(cfg)
     }
 }

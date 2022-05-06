@@ -24,11 +24,9 @@ spec:
         name: postgres
         resources: {}
         env:
-          - name: POSTGRES_PASSWORD # TODO secret management
-            value: mysecretpassword
-          - name: POSTGRES_DB
-            value: axum_demo
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
 status: {}
-
-# TODO should it be a stateful set?
-# TODO persistent volume & claim

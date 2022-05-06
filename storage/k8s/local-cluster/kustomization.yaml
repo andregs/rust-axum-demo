@@ -1,0 +1,6 @@
+resources:
+- ../../../config/local-cluster
+- postgres-deployment.yaml
+- postgres-service.yaml
+- redis-deployment.yaml
+- redis-service.yaml

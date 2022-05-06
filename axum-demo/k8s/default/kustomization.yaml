@@ -1,4 +1,3 @@
 resources:
-- ../../../config/
 - axum-demo-deployment.yaml
 - axum-demo-service.yaml

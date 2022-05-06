@@ -1,14 +1,8 @@
 # this kustomization inherits from our defaults
 resources:
 - ../default
+- ../../../config/local-cluster
 
-# and it patches the configmap generated from 'default' to set the active profile
-configMapGenerator:
-- name: app-config
-  behavior: merge
-  literals:
-  - app_profile=local-cluster
-
-# and it patches other k8s resources too
+# and it patches other k8s resources
 patchesStrategicMerge:
 - axum-demo-deployment.yaml

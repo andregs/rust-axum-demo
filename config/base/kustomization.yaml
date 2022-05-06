@@ -1,0 +1,14 @@
+# equivalent to:
+# kubectl create configmap app-config --from-file=config/base/application.toml
+# it can also be manually applied with
+# kubectl apply -k config/base
+
+configMapGenerator:
+- name: app-config
+  files:
+  - application.toml
+
+secretGenerator:
+- name: postgres-secret
+  literals:
+  - password=password for dev only!

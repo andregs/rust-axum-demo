@@ -3,13 +3,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  creationTimestamp: null
   name: migrate-db
 spec:
   backoffLimit: 4 # try job 5 times
   template:
-    metadata:
-      creationTimestamp: null
     spec:
       volumes:
       - name: config
@@ -21,7 +18,6 @@ spec:
       containers:
       - image: andregs/migrate-db
         name: migrate-db
-        resources: {}
         env:
         - name: RUST_BACKTRACE
           value: "1"
@@ -31,12 +27,17 @@ spec:
               name: app-config
               key: app_profile
               optional: true
+        - name: APP_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
         volumeMounts:
         - name: config
-          mountPath: /app/config
+          mountPath: /app/config/base
           readOnly: true
 
       # pod's container will not be restarted upon failure, but
       # will result in a new pod for the job until backoffLimit
       restartPolicy: Never
-status: {}
+

@@ -3,7 +3,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  creationTimestamp: null
   labels:
     app: axum-demo
   name: axum-demo
@@ -11,10 +10,8 @@ spec:
   selector:
     matchLabels:
       app: axum-demo
-  strategy: {}
   template:
     metadata:
-      creationTimestamp: null
       labels:
         app: axum-demo
     spec:
@@ -28,7 +25,6 @@ spec:
       containers:
       - image: andregs/axum-demo
         name: axum-demo
-        resources: {}
         env:
         - name: RUST_BACKTRACE
           value: "1"
@@ -38,8 +34,12 @@ spec:
               name: app-config
               key: app_profile
               optional: true
+        - name: APP_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
         volumeMounts:
         - name: config
-          mountPath: /app/config
+          mountPath: /app/config/base
           readOnly: true
-status: {}

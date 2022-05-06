@@ -1,0 +1,10 @@
+# this kustomization inherits from our defaults
+resources:
+- ../base
+
+# and it patches the configmap generated from 'base' to set the active profile
+configMapGenerator:
+- name: app-config
+  behavior: merge
+  literals:
+  - app_profile=local-cluster
